@@ -1,20 +1,22 @@
-var tickerPriceInfo = require("./tickerPriceInfo");
+const tickerPriceInfo = require("./tickerPriceInfo"),
+      _ = require('underscore'),
+      TIME_SERIES = 'Time Series';
 
-var tickerInfo = function(metaData, timeSeries, timeSeriesData){
-    // TODO: es6 print formatting
+var tickerInfo = function(metaData, timeSeriesData){
     // TODO: validate timeSeries
-    var timeSeriesStr = TIME_SERIES + "(" + timeSeries + ")";
-    var timeSeries = rawInfo[timeSeriesStr];
-    var timeSeriesArray = [];
-    // TODO: use underscore to pull a parameters for this object instead
-    // TODO: sort keys
-    Object.keys(timeSeries).forEach(function(key, value){
-       timeSeriesArray.append(tickerPriceInfo(key, value)); 
+    const timeSeriesInterval = metaData.interval,
+          timeSeriesStr = `${TIME_SERIES} (${timeSeriesInterval})`,
+          timeSeries = timeSeriesData[timeSeriesStr] || {};
+    const timeSeriesArray = _.mapObject(timeSeries, function(value, key){
+        return tickerPriceInfo(key, value);
     });
-
     return {
         timeSeries: timeSeries,
         metaData: metaData,
-        timeSeries: timeSeriesArray,
+        timeSeries: _.sortBy(timeSeriesArray, function(a, b){
+            return a.date - b.date;
+        }),
     };
 };
+
+module.exports = tickerInfo;
