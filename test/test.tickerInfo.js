@@ -1,7 +1,7 @@
 const assert = require('assert'),
-      tickerPriceInfo = require('../models/tickerPriceInfo'),
-      metaData = require('../models/tickerMetaData'),
-      tickerInfo = require('../models/tickerInfo'),
+      tickerPriceInfo = require('../src/models/tickerPriceInfo'),
+      metaData = require('../src/models/tickerMetaData'),
+      tickerInfo = require('../src/models/tickerInfo'),
       date = require('date-and-time');
 
 describe('tickerInfo', () => {

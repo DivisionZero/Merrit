@@ -4,20 +4,24 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test mocha"
+    "test": "cross-env NODE_ENV=test nyc mocha",
+    "watch:test": "mocha --watch",
+    "lint": "eslint src",
+    "validate": "npm-run-all --parallel test lint"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DivisionZero/Merrit.git"
   },
   "author": "Daniel Phillips",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/DivisionZero/Merrit/issues"
   },
   "homepage": "https://github.com/DivisionZero/Merrit#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "date-and-time": "^0.6.2",
     "express": "^4.16.3",
     "gulp": "^3.9.1",
     "gulp-mocha": "^5.0.0",
@@ -26,11 +30,34 @@
     "nodemon": "^1.17.3",
     "should": "^13.2.1",
     "sinon": "^4.5.0",
-    "eslint": "^3.2.0"
+    "underscore": "^1.9.0"
   },
   "devDependencies": {
     "cross-env": "^5.1.4",
+    "eslint": "^4.9.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
     "gulp-env": "^0.4.0",
+    "nyc": "^11.2.1",
     "supertest": "^3.0.0"
+  },
+  "nyc": {
+    "all": true,
+    "check-coverage": true,
+    "branches": 100,
+    "function": 100,
+    "lines": 100,
+    "statements": 100,
+    "reporter": [
+      "text",
+      "lcov"
+    ],
+    "sourceMap": false,
+    "instrument": false,
+    "include": [
+      "src/**/*.js"
+    ]
   }
 }

@@ -1,6 +1,6 @@
 const assert = require('assert'),
-      purchaseInfo = require('../models/purchaseInfo'),
-      purchasePriceInfo = require('../models/purchasePriceInfo');
+      purchaseInfo = require('../src/models/purchaseInfo'),
+      purchasePriceInfo = require('../src/models/purchasePriceInfo');
 
 describe('tickerInfo', () => {
     // TODO: change these
