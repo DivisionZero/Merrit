@@ -1,4 +1,3 @@
-
 const { getNumber, get } = require('../utils/objectTools')();
 
 module.exports = function purchasePriceInfo(purchaseInfo = {}) {

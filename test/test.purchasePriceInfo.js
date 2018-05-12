@@ -1,18 +1,18 @@
-const assert = require('assert'),
-      purchasePriceInfo = require('../src/models/purchasePriceInfo');
+const assert = require('assert');
+const purchasePriceInfo = require('../src/models/purchasePriceInfo');
 
 describe('purchasePriceInfo', () => {
     // TODO: change these
     it('verify this works!', () => {
-        const price = 30.34,
-              date = new Date(),
-              quantity = 432,
-              ppInfo = purchasePriceInfo({
-                price,
-                date,
-                quantity
-              });
-        
+        const price = 30.34;
+        const date = new Date();
+        const quantity = 432;
+        const ppInfo = purchasePriceInfo({
+            price,
+            date,
+            quantity,
+        });
+
         assert.equal(ppInfo.total, price * quantity);
     });
 });

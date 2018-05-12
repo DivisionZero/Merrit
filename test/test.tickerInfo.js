@@ -1,8 +1,6 @@
-const assert = require('assert'),
-      tickerPriceInfo = require('../src/models/tickerPriceInfo'),
-      metaData = require('../src/models/tickerMetaData'),
-      tickerInfo = require('../src/models/tickerInfo'),
-      date = require('date-and-time');
+const assert = require('assert');
+const metaData = require('../src/models/tickerMetaData');
+const tickerInfo = require('../src/models/tickerInfo');
 
 describe('tickerInfo', () => {
     // TODO: change this!
@@ -12,7 +10,7 @@ describe('tickerInfo', () => {
         metaDataObj['Last Refreshed'] = '2018-05-08';
         metaDataObj['Time Zone'] = 'US/Eastern';
         const md = metaData(metaDataObj);
-        let timeSeriesData = {};
+        const timeSeriesData = {};
         const timeSeriesName = 'Time Series (Daily)';
         timeSeriesData[timeSeriesName] = {};
         timeSeriesData[timeSeriesName]['2018-05-07'] = {

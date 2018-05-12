@@ -4,6 +4,7 @@ module.exports = function purchaseInfo(tickerSymbol) {
     const purchases = [];
     const add = function add(purchase) {
         purchases.push(purchase);
+        return this;
     };
     const remove = function remove() {
         throw new Error('not implemented!');

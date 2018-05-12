@@ -1,6 +1,6 @@
-const assert = require('assert'),
-      tickerPriceInfo = require('../src/models/tickerPriceInfo'),
-      date = require('date-and-time');
+const assert = require('assert');
+const tickerPriceInfo = require('../src/models/tickerPriceInfo');
+const date = require('date-and-time');
 
 describe('tickerPriceInfo', () => {
     // TODO: make this better and learn Mocha, should, chai etc
