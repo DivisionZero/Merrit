@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test nyc mocha",
+    "test": "cross-env NODE_ENV=test mocha",
+    "coverage": "istanbul cover node_modules/.bin/_mocha -- test/**/*",
     "watch:test": "mocha --watch",
-    "lint": "eslint src",
+    "lint": "eslint src test",
     "validate": "npm-run-all --parallel test lint"
   },
   "repository": {

@@ -17,6 +17,9 @@ module.exports = {
         "prefer-const": 1,
 
         // keep empty lines to a minimum
-        "no-multiple-empty-lines": [2, {"max": 1, "maxEOF": 0, "maxBOF": 0}]
+        "no-multiple-empty-lines": [2, {"max": 1, "maxEOF": 0, "maxBOF": 0}],
+
+        // disable modifying params, but not properties of params
+        "no-param-reassign": [2, {"props": false}]
     }
 }
