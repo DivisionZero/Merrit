@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test mocha",
-    "coverage": "istanbul cover node_modules/.bin/_mocha -- test/**/*",
+    "test": "cross-env NODE_ENV=test mocha tests/**/*",
+    "coverage": "istanbul cover node_modules/.bin/_mocha -- tests/**/*",
     "watch:test": "mocha --watch",
-    "lint": "eslint src test",
-    "validate": "npm-run-all --parallel test lint"
+    "lint": "eslint src tests",
+    "validate": "npm-run-all --parallel test lint coverage"
   },
   "repository": {
     "type": "git",

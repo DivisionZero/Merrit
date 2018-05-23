@@ -1,10 +1,8 @@
 const _ = require('underscore');
 const date = require('date-and-time');
 const { getString } = require('../utils/objectTools')();
+const { DAY_FORMAT, MINUTE_FORMAT } = require('../utils/dateTools')();
 
-// TODO: will this date formatting be outside this class?
-const DAY_FORMAT = 'YYYY-MM-DD';
-const MINUTE_FORMAT = `${DAY_FORMAT} HH:mm:ss`;
 const VALID_FIELD_NAMES = ['open', 'high', 'low', 'close', 'volume'];
 
 const tickerPriceInfo = function tickerPriceInfo(timeSeriesStr, rawInfo = {}) {

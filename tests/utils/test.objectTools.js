@@ -4,7 +4,7 @@ const {
     getString,
     getNumber,
     getDate,
-} = require('../src/utils/objectTools')();
+} = require('../../src/utils/objectTools')();
 const date = require('date-and-time');
 
 describe('object tools', () => {

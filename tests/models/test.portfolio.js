@@ -1,7 +1,7 @@
 const assert = require('assert');
-const portfolio = require('../src/models/portfolio');
-const purchaseInfo = require('../src/models/purchaseInfo');
-const purchasePriceInfo = require('../src/models/purchasePriceInfo');
+const portfolio = require('../../src/models/portfolio');
+const purchaseInfo = require('../../src/models/purchaseInfo');
+const purchasePriceInfo = require('../../src/models/purchasePriceInfo');
 
 describe('portfolio tests', () => {
     it('verify this works', () => {

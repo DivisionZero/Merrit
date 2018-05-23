@@ -1,9 +1,7 @@
 const { getStr, getDate } = require('../utils/objectTools')();
+const { DAY_FORMAT } = require('../utils/dateTools')();
 
-// TODO: will this date formatting be outside this class?
-// MINUTE_FORMAT = "${DAY_FORMAT} HH:mm:ss",
 const DAILY = 'Daily';
-const DAY_FORMAT = 'YYYY-MM-DD';
 
 const metaData = function metaData(rawData) {
     return {

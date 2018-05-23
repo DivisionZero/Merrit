@@ -1,5 +1,5 @@
 const assert = require('assert');
-const tickerPriceInfo = require('../src/models/tickerPriceInfo');
+const tickerPriceInfo = require('../../src/models/tickerPriceInfo');
 const date = require('date-and-time');
 
 describe('tickerPriceInfo', () => {

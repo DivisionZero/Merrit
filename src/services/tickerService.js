@@ -1,9 +1,10 @@
-const avService = require('./alphaVantageService');
-const { get } = require('../utils/objectTools');
+//const avService = require('./alphaVantageService');
+const { get } = require('../utils/objectTools')();
 const _ = require('underscore');
 const dateAndTime = require('date-and-time');
+const dateTools = require('../utils/dateTools')();
 
-module.exports = function tickerService() {
+module.exports = function tickerService(avService) {
     let useCache = true;
     let cache = {};
     let calledFromNested = false;
@@ -13,9 +14,10 @@ module.exports = function tickerService() {
             cache[ticker] = avService.timeSeriesDaily(ticker);
         }
 
-        // TODO: pull date format from somewhere
-        const dateStr = dateAndTime.format(date, 'YYYY-MM-DD');
-        const tickerInfo = get(cache[ticker].timeSeries, dateStr);
+        const tickerInfo = _.chain(cache[ticker].timeSeries)
+            .filter(ticker => dateTools.isSameDay(ticker.date, date))
+            .first()
+            .value();
 
         if (!useCache && !calledFromNested) {
             cache = {};

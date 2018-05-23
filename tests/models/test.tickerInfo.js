@@ -1,6 +1,6 @@
 const assert = require('assert');
-const metaData = require('../src/models/tickerMetaData');
-const tickerInfo = require('../src/models/tickerInfo');
+const metaData = require('../../src/models/tickerMetaData');
+const tickerInfo = require('../../src/models/tickerInfo');
 
 describe('tickerInfo', () => {
     // TODO: change this!
