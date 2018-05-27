@@ -1,26 +1,33 @@
-const assert = require('assert');
+const chai = require('chai');
+const expect = require('chai').expect;
 const {
     get,
     getString,
     getNumber,
     getDate,
-} = require('../../src/utils/objectTools')();
+} = require('../../src/utils/objectTools');
 const date = require('date-and-time');
+chai.should();
 
-describe('object tools', () => {
-    it('verify this works', () => {
-        assert.equal(undefined, get({}, 'foo'));
-        assert.equal(undefined, get(undefined, 'foo'));
-        assert.equal('bar', get(undefined, 'foo', 'bar'));
-        assert.equal('bar', get({ foo: 'bar' }, 'foo'));
-        assert.equal(4, get({ foo: 2 }, 'foo', undefined, n => n * n));
-        assert.equal('4', getString({ foo: 4 }, 'foo'));
-        assert.equal(4, getNumber({ foo: 4 }, 'foo'));
-        assert.equal(4.4, getNumber({ foo: 4.35 }, 'foo', undefined, 1));
+describe('objectTools', () => {
+    it('Test get()', () => {
+        expect(() => get({}, 'foo')).to.throw();
+        get(undefined, 'foo', 'bar').should.be.equal('bar');
+        get({foo: 'bar'}, 'foo').should.be.equal('bar');
+        get({ foo: 2 }, 'foo', undefined, n => n * n).should.be.equal(4);
+    });
+    it('Test getString()', () => {
+        getString({ foo: 4 }, 'foo').should.deep.equal('4');
+    });
+    it('Test getNumber()', () => {
+        getNumber({ foo: 4}, 'foo').should.deep.equal(4);
+        getNumber({ foo: 4.35 }, 'foo', undefined, 1).should.deep.equal(4.4);
+    });
+    it('Test getDate()', () => {
         const format = 'YYYY-MM-DD';
         const dateStr = '2018-01-01';
         const dateObj = date.parse(dateStr, format);
-        assert.equal(dateObj, getDate({ date: dateObj }, 'date', null, format));
-        assert.equal(dateObj.toISOString(), getDate({ date: dateStr }, 'date', null, format).toISOString());
+        getDate({ date: dateObj }, 'date', null, format).toISOString().should.equal(dateObj.toISOString());
+        getDate({ date: dateStr }, 'date', null, format).toISOString().should.equal(dateObj.toISOString());
     });
 });

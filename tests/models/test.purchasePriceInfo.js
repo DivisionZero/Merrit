@@ -1,18 +1,19 @@
-const assert = require('assert');
+const chai = require('chai');
 const purchasePriceInfo = require('../../src/models/purchasePriceInfo');
+chai.should();
 
 describe('purchasePriceInfo', () => {
-    // TODO: change these
-    it('verify this works!', () => {
+    it('test total', () => {
         const price = 30.34;
-        const date = new Date();
+        const boughtDate = new Date();
         const quantity = 432;
         const ppInfo = purchasePriceInfo({
             price,
-            date,
+            boughtDate,
+            soldDate: null,
             quantity,
         });
 
-        assert.equal(ppInfo.total, price * quantity);
+        ppInfo.total.should.deep.equal(price * quantity);
     });
 });

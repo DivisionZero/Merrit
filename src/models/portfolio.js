@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const { get, getStr } = require('../utils/objectTools')();
+const { get, getStr } = require('../utils/objectTools');
 
 module.exports = function portfolio() {
     const tickers = {};

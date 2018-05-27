@@ -1,5 +1,5 @@
-const { getStr, getDate } = require('../utils/objectTools')();
-const { DAY_FORMAT } = require('../utils/dateTools')();
+const { getStr, getDate } = require('../utils/objectTools');
+const { DAY_FORMAT } = require('../utils/dateTools');
 
 const DAILY = 'Daily';
 

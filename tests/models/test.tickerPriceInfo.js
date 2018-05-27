@@ -1,18 +1,21 @@
-const assert = require('assert');
+const chai = require('chai');
 const tickerPriceInfo = require('../../src/models/tickerPriceInfo');
 const date = require('date-and-time');
+const { DAY_FORMAT } = require('../../src/utils/dateTools');
+chai.should();
 
 describe('tickerPriceInfo', () => {
-    // TODO: make this better and learn Mocha, should, chai etc
-    it('verify all values are numbers', () => {
-        const tpi = tickerPriceInfo('2018-01-03', {
+    it('verify all values are valid', () => {
+        const close = 10.45;
+        const dateStr = '2018-01-03';
+        const tpi = tickerPriceInfo(dateStr, {
             open: 10.00,
             high: 11.00,
             low: 9.13,
-            close: 10.45,
+            close: close,
             volume: 1000343,
         });
-        assert.equal(tpi.high, 11.00);
-        assert.equal(date.format(tpi.date, 'YYYY-MM-DD'), '2018-01-03');
+        tpi.close.should.deep.equal(close);
+        date.format(tpi.date, DAY_FORMAT).should.equal(dateStr);
     });
 });

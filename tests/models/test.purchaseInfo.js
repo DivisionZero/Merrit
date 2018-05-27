@@ -1,10 +1,10 @@
-const assert = require('assert');
+const chai = require('chai');
 const purchaseInfo = require('../../src/models/purchaseInfo');
 const purchasePriceInfo = require('../../src/models/purchasePriceInfo');
+chai.should();
 
-describe('tickerInfo', () => {
-    // TODO: change these
-    it('verify this works', () => {
+describe('purchaseInfo', () => {
+    it('test total()', () => {
         const priceA = 50;
         const priceB = 40;
         const quantityA = 10;
@@ -12,14 +12,14 @@ describe('tickerInfo', () => {
         const purchaseInfoObj = purchaseInfo('MSFT');
         purchaseInfoObj.add(purchasePriceInfo({
             price: priceA,
-            date: new Date(),
+            boughtDate: new Date(),
             quantity: quantityA,
         })).add(purchasePriceInfo({
             price: priceB,
-            date: new Date(),
+            boughtDate: new Date(),
             quantity: quantityB,
         }));
 
-        assert.equal(purchaseInfoObj.total(), (priceA * quantityA) + (priceB * quantityB));
+        purchaseInfoObj.total().should.equal((priceA * quantityA) + (priceB * quantityB));
     });
 });

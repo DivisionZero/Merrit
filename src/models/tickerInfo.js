@@ -1,6 +1,6 @@
 const tickerPriceInfo = require('./tickerPriceInfo');
 const _ = require('underscore');
-const { get, getString } = require('../utils/objectTools')();
+const { get, getString } = require('../utils/objectTools');
 
 const TIME_SERIES = 'Time Series';
 

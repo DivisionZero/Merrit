@@ -1,10 +1,10 @@
-const assert = require('assert');
+const chai = require('chai');
 const metaData = require('../../src/models/tickerMetaData');
 const tickerInfo = require('../../src/models/tickerInfo');
+chai.should();
 
 describe('tickerInfo', () => {
-    // TODO: change this!
-    it('verify this works', () => {
+    it('test object creation', () => {
         const metaDataObj = {};
         metaDataObj.Symbol = 'MSFT';
         metaDataObj['Last Refreshed'] = '2018-05-08';
@@ -23,6 +23,6 @@ describe('tickerInfo', () => {
 
         const tickerInfoObj = tickerInfo(md, timeSeriesData);
 
-        assert.equal(tickerInfoObj.timeSeries.length, 1);
+        tickerInfoObj.timeSeries.length.should.equal(1);
     });
 });

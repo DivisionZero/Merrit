@@ -1,8 +1,8 @@
 //const avService = require('./alphaVantageService');
-const { get } = require('../utils/objectTools')();
+const { get } = require('../utils/objectTools');
 const _ = require('underscore');
 const dateAndTime = require('date-and-time');
-const dateTools = require('../utils/dateTools')();
+const dateTools = require('../utils/dateTools');
 
 module.exports = function tickerService(avService) {
     let useCache = true;
