@@ -2,7 +2,7 @@ const _ = require('underscore');
 const date = require('date-and-time');
 
 const objectTools = function objectTools() {
-    const defaultError = "obj must be an object or defaultValue must be provided.";
+    const defaultError = 'obj must be an object or defaultValue must be provided.';
     const round = function round(value, decimals) {
         return Number(`${Math.round(`${value}e${decimals}`)}e-${decimals}`);
     };

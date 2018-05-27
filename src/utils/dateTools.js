@@ -9,12 +9,12 @@ const dateTools = function dateTools() {
         if (!_.isDate(dateA) || !_.isDate(dateB)) {
             throw new TypeError('dateA and dateB must be Date objects');
         }
-        return dateAndTime.format(dateA, DAY_FORMAT) === dateAndTime.format(dateB, DAY_FORMAT); 
+        return dateAndTime.format(dateA, DAY_FORMAT) === dateAndTime.format(dateB, DAY_FORMAT);
     };
 
     const convertStringDayToDate = function convertStringDayToDate(Day_YYYY_MM_DD) {
 
-    }
+    };
 
     return {
         isSameDay,

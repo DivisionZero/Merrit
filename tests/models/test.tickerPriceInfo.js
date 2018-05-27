@@ -2,6 +2,7 @@ const chai = require('chai');
 const tickerPriceInfo = require('../../src/models/tickerPriceInfo');
 const date = require('date-and-time');
 const { DAY_FORMAT } = require('../../src/utils/dateTools');
+
 chai.should();
 
 describe('tickerPriceInfo', () => {
@@ -12,7 +13,7 @@ describe('tickerPriceInfo', () => {
             open: 10.00,
             high: 11.00,
             low: 9.13,
-            close: close,
+            close,
             volume: 1000343,
         });
         tpi.close.should.deep.equal(close);

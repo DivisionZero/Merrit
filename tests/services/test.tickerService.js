@@ -3,6 +3,7 @@ const tickerSvc = require('../../src/services/tickerService');
 const tickerInfo = require('../../src/models/tickerInfo');
 const dateAndTime = require('date-and-time');
 const dateTool = require('../../src/utils/dateTools');
+
 chai.should();
 
 describe('tickerService', () => {
@@ -10,17 +11,17 @@ describe('tickerService', () => {
     const timeSeriesDailyStr = 'Time Series (Daily)';
     const now = new Date();
     const price = 100;
-    beforeEach(function(){
+    beforeEach(() => {
         tickerService = tickerSvc({
-            timeSeriesDaily: function(ticker) {
+            timeSeriesDaily(ticker) {
                 const timeSeriesData = {};
                 timeSeriesData[timeSeriesDailyStr] = {};
-                timeSeriesData[timeSeriesDailyStr][dateAndTime.format(now, dateTool.DAY_FORMAT)] =  {
-                    close: price
-                }
-                const tickerObj = tickerInfo({interval: 'Daily'}, timeSeriesData);
+                timeSeriesData[timeSeriesDailyStr][dateAndTime.format(now, dateTool.DAY_FORMAT)] = {
+                    close: price,
+                };
+                const tickerObj = tickerInfo({ interval: 'Daily' }, timeSeriesData);
                 return tickerObj;
-            }
+            },
         });
     });
     it('test getPriceForDate()', () => {

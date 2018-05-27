@@ -1,6 +1,7 @@
 const chai = require('chai');
 const metaData = require('../../src/models/tickerMetaData');
 const tickerInfo = require('../../src/models/tickerInfo');
+
 chai.should();
 
 describe('tickerInfo', () => {

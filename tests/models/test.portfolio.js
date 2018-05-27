@@ -2,6 +2,7 @@ const chai = require('chai');
 const portfolio = require('../../src/models/portfolio');
 const purchaseInfo = require('../../src/models/purchaseInfo');
 const purchasePriceInfo = require('../../src/models/purchasePriceInfo');
+
 chai.should();
 
 describe('portfolio', () => {

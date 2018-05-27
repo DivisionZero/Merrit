@@ -1,6 +1,7 @@
 const chai = require('chai');
 const purchaseInfo = require('../../src/models/purchaseInfo');
 const purchasePriceInfo = require('../../src/models/purchasePriceInfo');
+
 chai.should();
 
 describe('purchaseInfo', () => {
