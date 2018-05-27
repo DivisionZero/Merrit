@@ -12,9 +12,11 @@ const dateTools = function dateTools() {
         return dateAndTime.format(dateA, DAY_FORMAT) === dateAndTime.format(dateB, DAY_FORMAT);
     };
 
+    /*
     const convertStringDayToDate = function convertStringDayToDate(Day_YYYY_MM_DD) {
 
     };
+    */
 
     return {
         isSameDay,

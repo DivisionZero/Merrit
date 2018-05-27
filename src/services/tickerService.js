@@ -1,7 +1,5 @@
 // const avService = require('./alphaVantageService');
-const { get } = require('../utils/objectTools');
 const _ = require('underscore');
-const dateAndTime = require('date-and-time');
 const dateTools = require('../utils/dateTools');
 
 module.exports = function tickerService(avService) {
@@ -15,7 +13,7 @@ module.exports = function tickerService(avService) {
         }
 
         const tickerInfo = _.chain(cache[ticker].timeSeries)
-            .filter(ticker => dateTools.isSameDay(ticker.date, date))
+            .filter(localTicker => dateTools.isSameDay(localTicker.date, date))
             .first()
             .value();
 

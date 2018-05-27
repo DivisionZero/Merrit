@@ -1,5 +1,8 @@
 module.exports = {
     "extends": "airbnb",
+    "plugins": [
+        "chai-friendly"
+    ],
     "env": {
         "node": true,
         "browser": false,
@@ -20,6 +23,10 @@ module.exports = {
         "no-multiple-empty-lines": [2, {"max": 1, "maxEOF": 0, "maxBOF": 0}],
 
         // disable modifying params, but not properties of params
-        "no-param-reassign": [2, {"props": false}]
+        "no-param-reassign": [2, {"props": false}],
+
+        // work with chai
+        "no-unused-expressions": 0,
+        "chai-friendly/no-unused-expressions": 2
     }
 }

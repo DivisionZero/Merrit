@@ -13,7 +13,7 @@ describe('tickerService', () => {
     const price = 100;
     beforeEach(() => {
         tickerService = tickerSvc({
-            timeSeriesDaily(ticker) {
+            timeSeriesDaily() {
                 const timeSeriesData = {};
                 timeSeriesData[timeSeriesDailyStr] = {};
                 timeSeriesData[timeSeriesDailyStr][dateAndTime.format(now, dateTool.DAY_FORMAT)] = {

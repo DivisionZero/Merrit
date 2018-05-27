@@ -1,5 +1,5 @@
 const chai = require('chai');
-const expect = require('chai').expect;
+const { expect } = require('chai');
 const dateAndTime = require('date-and-time');
 const dateTool = require('../../src/utils/dateTools');
 
