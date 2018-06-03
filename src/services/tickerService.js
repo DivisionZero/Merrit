@@ -1,25 +1,32 @@
 // const avService = require('./alphaVantageService');
 const _ = require('underscore');
 const dateTools = require('../utils/dateTools');
+const tickerInfo = require('../models/tickerInfo');
 
 module.exports = function tickerService(avService) {
     let useCache = true;
-    let cache = {};
-    let calledFromNested = false;
+    const cache = {};
 
-    const getPriceForDate = function getPricesForDate(ticker, date) {
-        if (_.isEmpty(cache) && !calledFromNested) {
-            cache[ticker] = avService.timeSeriesDaily(ticker);
+    const getPriceForDate = function getPriceForDate(ticker, date) {
+        if (_.isEmpty(cache) || !useCache) {
+            return avService.timeSeriesDaily(ticker)
+                .then(result => JSON.parse(result))
+                .then(resultJson => tickerInfo('Daily', resultJson))
+                .then(convertedResponse => {
+                    cache[ticker] = convertedResponse;
+                    return findPriceTicker(ticker, date);
+                });
+        } else {
+            // TODO: will this fail because it isn't a promise?
+            return findPriceTicker(ticker, date);
         }
+    }
 
+    const findPriceTicker = function findPriceTicker(ticker, date) {
         const tickerInfo = _.chain(cache[ticker].timeSeries)
             .filter(localTicker => dateTools.isSameDay(localTicker.date, date))
             .first()
             .value();
-
-        if (!useCache && !calledFromNested) {
-            cache = {};
-        }
 
         return {
             price: tickerInfo ? tickerInfo.close : null,
@@ -28,13 +35,10 @@ module.exports = function tickerService(avService) {
     };
 
     const getPriceForDates = function getPricesForDates(ticker, dateArray) {
-        calledFromNested = true;
         const priceDates = [];
-        _.each(dateArray, date => priceDates.push(getPriceForDate(ticker, date)));
-        if (!useCache) {
-            cache = {};
-        }
-        calledFromNested = false;
+        _.each(dateArray, date => {
+            priceDates.push(getPriceForDate(ticker, date))
+        });
         return priceDates;
     };
 
