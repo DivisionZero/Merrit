@@ -1,6 +1,5 @@
 const chai = require('chai');
 const tickerSvc = require('../../src/services/tickerService');
-const tickerInfo = require('../../src/models/tickerInfo');
 const dateAndTime = require('date-and-time');
 const dateTool = require('../../src/utils/dateTools');
 const _ = require('underscore');
@@ -20,7 +19,7 @@ describe('tickerService', () => {
                 const timeSeriesData = {};
                 timeSeriesData[timeSeriesDailyStr] = {};
                 timeSeriesData[timeSeriesDailyStr][dateAndTime.format(now, dateTool.DAY_FORMAT)] = {
-                    "4. close": price,
+                    '4. close': price,
                 };
                 return Promise.resolve(JSON.stringify(timeSeriesData));
             },

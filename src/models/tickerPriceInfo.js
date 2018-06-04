@@ -4,10 +4,10 @@ const { getNumber } = require('../utils/objectTools');
 const { DAY_FORMAT, MINUTE_FORMAT } = require('../utils/dateTools');
 
 const VALID_FIELD_NAMES = {
-    '1. open': 'open', 
-    '2. high': 'high', 
-    '3. low': 'low', 
-    '4. close': 'close', 
+    '1. open': 'open',
+    '2. high': 'high',
+    '3. low': 'low',
+    '4. close': 'close',
     '5. volume': 'volume',
 };
 

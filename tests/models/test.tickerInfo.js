@@ -22,7 +22,7 @@ describe('tickerInfo', () => {
             volume: 1000343,
         };
         const apiObj = {};
-        apiObj["Meta Data"] = md;
+        apiObj['Meta Data'] = md;
         apiObj[timeSeriesName] = timeSeriesData;
         const tickerInfoObj = tickerInfo('Daily', apiObj);
 

@@ -1,7 +1,7 @@
 const tickerPriceInfo = require('./tickerPriceInfo');
 const metaData = require('./tickerMetaData');
 const _ = require('underscore');
-const { get, getString } = require('../utils/objectTools');
+const { get } = require('../utils/objectTools');
 
 const TIME_SERIES = 'Time Series';
 

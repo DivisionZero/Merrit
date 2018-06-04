@@ -1,13 +1,13 @@
-const dateAndTime = require('date-and-time');
+// const dateAndTime = require('date-and-time');
 const portfolio = require('../../src/models/portfolio');
 const purchaseInfo = require('../../src/models/purchaseInfo');
-//const timeRangePortfolio = require('../../src/models/timeRangePortfolio');
+const timeRangePortfolio = require('../../src/models/timeRangePortfolio');
 
 describe('timeRangePortfolio', () => {
     it.skip('test getStats', () => {
         const endDate = new Date();
         const startDate = endDate.addDays(endDate, -1);
-        const portfolio1 = portfolio() 
+        const portfolio1 = portfolio()
             .addPurchase(purchaseInfo('Z').add({
                 boughtDate: '2015-01-03',
                 price: 32.32,
