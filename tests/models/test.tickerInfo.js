@@ -21,8 +21,10 @@ describe('tickerInfo', () => {
             close: 10.45,
             volume: 1000343,
         };
-
-        const tickerInfoObj = tickerInfo(md, timeSeriesData);
+        const apiObj = {};
+        apiObj["Meta Data"] = md;
+        apiObj[timeSeriesName] = timeSeriesData;
+        const tickerInfoObj = tickerInfo('Daily', apiObj);
 
         tickerInfoObj.timeSeries.length.should.equal(1);
     });

@@ -20,39 +20,56 @@ describe('tickerService', () => {
                 const timeSeriesData = {};
                 timeSeriesData[timeSeriesDailyStr] = {};
                 timeSeriesData[timeSeriesDailyStr][dateAndTime.format(now, dateTool.DAY_FORMAT)] = {
-                    close: price,
+                    "4. close": price,
                 };
-                const tickerObj = tickerInfo({ interval: 'Daily' }, timeSeriesData);
-                return tickerObj;
+                return Promise.resolve(JSON.stringify(timeSeriesData));
             },
         };
         tickerService = tickerSvc(timeSeriesDaily);
         sinon.spy(timeSeriesDaily, 'timeSeriesDaily');
     });
-    it('test getPriceForDate()', () => {
-        const priceObj = tickerService.getPriceForDate('Z', now);
-        priceObj.price.should.deep.equal(price);
-        dateTool.isSameDay(now, priceObj.date).should.be.true;
-        timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
+    it('test getPriceForDate()', (done) => {
+        const priceObjPromise = tickerService.getPriceForDate('Z', now);
+        priceObjPromise.then((response) => {
+            response.price.should.deep.equal(price);
+            dateTool.isSameDay(now, response.date).should.be.true;
+            timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
+            done();
+        }).catch((err) => {
+            console.log(err);
+        });
     });
-    it('test getPriceForDates()', () => {
-        const priceObjs = tickerService.getPriceForDates('Z', [now]);
-        priceObjs.length.should.equal(1);
-        _.each(priceObjs, (priceObj) => {
-            priceObj.price.should.deep.equal(price);
-            dateTool.isSameDay(now, priceObj.date).should.be.true;
+    it('test getPriceForDates()', (done) => {
+        const priceObjPromises = tickerService.getPriceForDates('Z', [now]);
+        priceObjPromises.length.should.equal(1);
+        _.each(priceObjPromises, (promise) => {
+            promise.then((response) => {
+                response.price.should.deep.equal(price);
+                dateTool.isSameDay(now, response.date).should.be.true;
+            }).catch((err) => {
+                console.log(err);
+            });
         });
         timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
+        done();
     });
-    it('test caching', () => {
+    it('test caching', (done) => {
         tickerService.setUseCache(true);
-        tickerService.getPriceForDate('Z', now);
-        timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
-        tickerService.getPriceForDate('Z', now);
-        timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
-
-        tickerService.setUseCache(false);
-        tickerService.getPriceForDate('Z', now);
-        timeSeriesDaily.timeSeriesDaily.calledTwice.should.be.true;
+        const priceObjPromise = tickerService.getPriceForDate('Z', now);
+        priceObjPromise.then(() => {
+            timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
+            const anotherPromise = tickerService.getPriceForDate('Z', now);
+            anotherPromise.then(() => {
+                timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
+                tickerService.setUseCache(false);
+                const yetAnotherPromise = tickerService.getPriceForDate('Z', now);
+                yetAnotherPromise.then(() => {
+                    timeSeriesDaily.timeSeriesDaily.calledTwice.should.be.true;
+                    done();
+                });
+            });
+        }).catch((err) => {
+            console.log(err);
+        });
     });
 });

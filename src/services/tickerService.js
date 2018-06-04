@@ -17,8 +17,7 @@ module.exports = function tickerService(avService) {
                     return findPriceTicker(ticker, date);
                 });
         } else {
-            // TODO: will this fail because it isn't a promise?
-            return findPriceTicker(ticker, date);
+            return Promise.resolve(findPriceTicker(ticker, date));
         }
     }
 

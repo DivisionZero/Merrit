@@ -10,11 +10,11 @@ describe('tickerPriceInfo', () => {
         const close = 10.45;
         const dateStr = '2018-01-03';
         const tpi = tickerPriceInfo(dateStr, {
-            open: 10.00,
-            high: 11.00,
-            low: 9.13,
-            close,
-            volume: 1000343,
+            "1. open": 10.00,
+            "2. high": 11.00,
+            "3. low": 9.13,
+            "4. close": close,
+            "5. volume": 1000343,
         });
         tpi.close.should.deep.equal(close);
         date.format(tpi.date, DAY_FORMAT).should.equal(dateStr);
