@@ -21,10 +21,14 @@ module.exports = function portfolio() {
             _.values(tickers);
         return _.reduce(tickersLocal, (memo, purchase) => memo + purchase.total(), 0);
     };
+    const getTickers = function getTickers() {
+        return tickers;
+    };
 
     return {
         total,
         addPurchase,
         removePurchase,
+        getTickers,
     };
 };

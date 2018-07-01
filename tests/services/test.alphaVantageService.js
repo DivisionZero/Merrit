@@ -1,5 +1,4 @@
 const avService = require('../../src/services/alphaVantageService');
-const tickerInfo = require('../../src/models/tickerInfo');
 const tickerService = require('../../src/services/tickerService')(avService);
 const dateAndTime = require('date-and-time');
 const _ = require('underscore');

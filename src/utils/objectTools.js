@@ -1,5 +1,6 @@
 const _ = require('underscore');
 const date = require('date-and-time');
+const dateTools = require('./dateTools');
 
 const objectTools = function objectTools() {
     const defaultError = 'obj must be an object or defaultValue must be provided.';
@@ -42,7 +43,9 @@ const objectTools = function objectTools() {
         }
         // TODO: check for numbers
         if (_.isString(dateValue)) {
-            // TODO: default dateFormat
+            if (dateFormat === undefined) {
+                return date.parse(dateValue, dateTools.DAY_FORMAT);
+            }
             return date.parse(dateValue, dateFormat);
         }
         return defaultValue;

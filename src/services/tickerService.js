@@ -1,7 +1,7 @@
-// const avService = require('./alphaVantageService');
 const _ = require('underscore');
 const dateTools = require('../utils/dateTools');
 const tickerInfo = require('../models/tickerInfo');
+const dateAndTime = require('date-and-time');
 
 module.exports = function tickerService(avService) {
     let useCache = true;
@@ -19,17 +19,49 @@ module.exports = function tickerService(avService) {
         };
     };
 
-    const getPriceForDate = function getPriceForDate(ticker, date) {
-        if (_.isEmpty(cache) || !useCache) {
+    const findMinTicker = function findMinTicker(ticker) {
+        return _.chain(cache[ticker].timeSeries)
+            .min(localTicker => localTicker.date.getTime())
+            .value();
+    };
+
+    const initCache = function initCache(ticker) {
+        if (_.isEmpty(cache[ticker]) || !useCache) {
             return avService.timeSeriesDaily(ticker)
                 .then(result => JSON.parse(result))
                 .then(resultJson => tickerInfo('Daily', resultJson))
                 .then((convertedResponse) => {
                     cache[ticker] = convertedResponse;
-                    return findPriceTicker(ticker, date);
+                    return true;
                 });
         }
-        return Promise.resolve(findPriceTicker(ticker, date));
+        return Promise.resolve(true);
+    };
+
+    const getPriceForDate = function getPriceForDate(ticker, date) {
+        return initCache(ticker).then(() => Promise.resolve(findPriceTicker(ticker, date)));
+    };
+
+    const getTickerMinDate = function getTickerMinDate(ticker) {
+        return initCache(ticker).then(() => Promise.resolve(findMinTicker(ticker)));
+    };
+
+    const getPriceForDateScaling = function getPriceForDateScaling(ticker, date) {
+        const pricePromise = getPriceForDate(ticker, date);
+        return pricePromise.then((priceObj) => {
+            // if price wasn't found on that day (i.e exchange closed, find
+            // previous day
+            if (priceObj.price === null) {
+                return getTickerMinDate(ticker).then((response) => {
+                    if (date <= response.date) {
+                        // TODO: change this
+                        throw new Error('Ticker Info Before ', date, 'Not Available');
+                    }
+                    return getPriceForDateScaling(ticker, dateAndTime.addDays(date, -1));
+                });
+            }
+            return Promise.resolve(priceObj);
+        });
     };
 
     const getPriceForDates = function getPricesForDates(ticker, dateArray) {
@@ -40,6 +72,46 @@ module.exports = function tickerService(avService) {
         return priceDates;
     };
 
+    const equalDateCallback = function equalDateCallback(ticker, startDate, endDate) {
+        if (dateTools.isSameDay(startDate, endDate)) {
+            return getPriceForDateScaling(ticker, dateAndTime.addDays(startDate, -1));
+        }
+        return null;
+    };
+
+    const getPriceForStartEndDate = function getPriceForStartEndDate(ticker, startDate, endDate) {
+        const startPromise = getPriceForDateScaling(ticker, startDate);
+        const endPromise = getPriceForDateScaling(ticker, endDate);
+
+        return startPromise.then(startResponse =>
+            endPromise.then((endResponse) => {
+                const sameDateResponse = equalDateCallback(ticker, startResponse.date, endResponse
+                    .date);
+                if (sameDateResponse !== null) {
+                    return sameDateResponse.then((sdResponse) => {
+                        const newResponse = sdResponse;
+                        return {
+                            startResponse: newResponse,
+                            endResponse,
+                        };
+                    });
+                }
+                return {
+                    startResponse,
+                    endResponse,
+                };
+            }));
+    };
+
+    const getPriceForStartEndDates = function getPriceForStartEndDates(ticker, dateObjArray) {
+        const priceDatesPromises = [];
+        _.each(dateObjArray, (dateObj) => {
+            priceDatesPromises.push(getPriceForStartEndDate(ticker, dateObj.start, dateObj.end));
+        });
+
+        return priceDatesPromises;
+    };
+
     const setUseCache = function setUseCache(setCache) {
         useCache = !!setCache;
         return this;
@@ -48,6 +120,10 @@ module.exports = function tickerService(avService) {
     return {
         getPriceForDates,
         getPriceForDate,
+        getPriceForDateScaling,
+        getPriceForStartEndDates,
+        getPriceForStartEndDate,
+        getTickerMinDate,
         setUseCache,
     };
 };
