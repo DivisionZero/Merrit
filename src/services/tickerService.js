@@ -108,7 +108,6 @@ module.exports = function tickerService(avService) {
         _.each(dateObjArray, (dateObj) => {
             priceDatesPromises.push(getPriceForStartEndDate(ticker, dateObj.start, dateObj.end));
         });
-
         return priceDatesPromises;
     };
 

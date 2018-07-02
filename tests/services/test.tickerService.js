@@ -9,7 +9,7 @@ const { expect } = chai;
 
 chai.should();
 
-describe.only('tickerService', () => {
+describe('tickerService', () => {
     const timeSeriesDailyStr = 'Time Series (Daily)';
     let tickerService;
     describe('Exact, no scaling', () => {

@@ -2,8 +2,6 @@ const _ = require('underscore');
 const { get } = require('../utils/objectTools');
 const tickerServiceDefault = require('../services/tickerService');
 const avService = require('../services/alphaVantageService');
-const stringifyObject = require('stringify-object');
-const so = stringifyObject;
 
 module.exports = function timeRangePortfolio(portfolio, startDate, endDate) {
     const applicablePurchases = {};
@@ -30,21 +28,16 @@ module.exports = function timeRangePortfolio(portfolio, startDate, endDate) {
     };
 
     const generateTickerPrices = function generateTickerPrices() {
-        console.log("Fetch PRices:", fetchStartEndPrices);
         const promises = {};
         _.mapObject(fetchStartEndPrices, (dates, ticker) => {
             if (_.isEmpty(tickerPrices[ticker]) || useCache === true) {
-                console.log("dual dates", dates);
                 const tickerPromises = getTickerService().getPriceForStartEndDates(ticker, dates);
                 _.each(tickerPromises, (promiseRange) => {
-                    promiseRange.startPromise.then((startResponse) => {
-                        promiseRange.endPromise.then((endResponse) => {
-                            console.log('another promise then: ', startResponse, endResponse);
-                            tickerPrices[ticker] = {
-                                start: startResponse,
-                                end: endResponse
-                            };
-                        });
+                    promiseRange.then((rangeResponse) => {
+                        tickerPrices[ticker] = {
+                            start: rangeResponse.startResponse,
+                            end: rangeResponse.endResponse
+                        };
                     });
                     promises[ticker] = promiseRange;
                 });
@@ -54,19 +47,6 @@ module.exports = function timeRangePortfolio(portfolio, startDate, endDate) {
         });
         return promises;
     };
-
-    /*
-    const getFromTickerPrices = function getFromTickerPrices(ticker, targetDate, tickerResponse) {
-console.log("getFromTickerPrices", ticker, targetDate, so(tickerResponse));
-        return tickerPromise.then((response) => {
-            return _.chain(get(response, ticker, []))
-                .filter(tickerPrice => tickerPrice.date === targetDate)
-                .map(tickerPrice => tickerPrice.price)
-                .first()
-                .value();
-        });
-    };
-    */
 
     const addToHashArray = function addToArray(obj, key, value) {
         if (!_.has(obj, key)) {
@@ -93,10 +73,6 @@ console.log("getFromTickerPrices", ticker, targetDate, so(tickerResponse));
         purchase.priceStartDate = priceStartDate;
         purchase.priceEndDate = priceEndDate;
         addToHashArray(applicablePurchases, ticker, purchase);
-        /*
-        addToHashArray(fetchStartEndPrices, ticker, priceStartDate);
-        addToHashArray(fetchStartEndPrices, ticker, priceEndDate);
-        */
         addStartEndToArray(fetchStartEndPrices, ticker, priceStartDate, priceEndDate);
     };
 
@@ -142,36 +118,52 @@ console.log("getFromTickerPrices", ticker, targetDate, so(tickerResponse));
         return (currentPrice - amountGained) / 100;
     };
 
-    const reducePurchasesToAmount = function reducePurchasesToAmount(purchases, ticker, tickerResponse) {
-console.log("ticker Response", tickerResponse);
-        return _.reduce(purchases, (memo, purchase) => {
-console.log("purchases", so(purchases));
-            // TODO: what to do if it doesn't exist?
-            /*/
-            const startPrice = tickerResponse.price;
-                //getFromTickerPrices(ticker, purchase.priceStartDate, tickerResponse);
-            const endPrice = null;
-                //getFromTickerPrices(ticker, purchase.priceEndDate, tickerResponse);
+    const percentGained = function percentGained(oldPrice, newPrice) {
+        return (newPrice - oldPrice) / oldPrice;
+    };
 
-            return memo + gained(endPricePromise, startPricePromise, purchase.quantity);
-            */
+    const reducePurchasesToAmount = function reducePurchasesToAmount(purchases, ticker, tickerResponse) {
+        return _.reduce(purchases, (memo, purchase) => {
+            const difference = tickerResponse.endResponse.price - tickerResponse.startResponse.price;
+            return memo + (difference * purchase.quantity);
         }, 0);
+    };
+
+    const getStatsByTicker = function getStatsByTicker(tickerPromises, purchases, ticker) {
+        return tickerPromises[ticker].then((tickerResponse) => {
+            return {
+                amountGained: reducePurchasesToAmount(purchases, ticker, tickerResponse),
+                percentGained: percentGained(tickerResponse.startResponse.price, tickerResponse.endResponse.price),
+            };
+        });
+    };
+
+    const getStatsCombined = function getStatsCombined(allStats) {
+        let totalAmountGained = 0;
+        let currentAmount = 0;
+        _.each(allStats, (stats) => {
+            const amountGained = stats.amountGained;
+            totalAmountGained += amountGained;
+            currentAmount += (amountGained / stats.percentGained) - amountGained;
+        });
+        return {
+            amountGained: totalAmountGained,
+            percentGained: totalAmountGained / currentAmount,
+        };
     };
 
     const getStats = function getStats() {
         const tickerPromises = generateTickerPrices();
         const tickerPromiseStats = {};
         _.mapObject(applicablePurchases, (purchases, ticker) => {
-            tickerPromises[ticker].then((tickerResponse) => {
-console.log("Entire ticker Response?", tickerResponse);
-                tickerPromiseStats[ticker] = reducePurchasesToAmount(purchases, ticker, tickerResponse);
-            });
+            tickerPromiseStats[ticker] = getStatsByTicker(tickerPromises, purchases, ticker);
         });
         return tickerPromiseStats;
     };
 
     return {
         getStats,
+        getStatsCombined,
         setUseCache,
         setTickerService,
     };

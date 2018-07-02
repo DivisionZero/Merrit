@@ -1,3 +1,4 @@
+const _ = require('underscore');
 const dateAndTime = require('date-and-time');
 const portfolio = require('../../src/models/portfolio');
 const purchaseInfo = require('../../src/models/purchaseInfo');
@@ -5,15 +6,10 @@ const purchasePriceInfo = require('../../src/models/purchasePriceInfo');
 const timeRangePortfolio = require('../../src/models/timeRangePortfolio');
 
 describe('timeRangePortfolio', () => {
-    it('test getStats', () => {
-        /*
-         another promise then:  { price: 13.61, date: 2018-06-29T17:30:46.062Z } { price: 13.61, date: 2018-06-29T17:30:46.062Z }
-another promise then:  { price: 13.61, date: 2018-06-29T17:30:46.062Z } { price: 13.61, date: 2018-06-29T17:30:46.062Z }
-another promise then:  { price: 59.06, date: 2018-06-29T17:30:46.062Z } { price: 59.06, date: 2018-06-29T17:30:46.062Z }
-another promise then:  { price: 59.06, date: 2018-06-29T17:30:46.062Z } { price: 59.06, date: 2018-06-29T17:30:46.062Z }
-*/
+    it.only('test getStats', () => {
         const endDate = new Date();
-        const startDate = dateAndTime.addDays(endDate, -1);
+        //const startDate = dateAndTime.addDays(endDate, -1);
+        const startDate = dateAndTime.parse('2018-02-11', 'YYYY-MM-DD');
         const portfolio1 = portfolio()
             .addPurchase(purchaseInfo('Z').add(
                 purchasePriceInfo({
@@ -28,6 +24,13 @@ another promise then:  { price: 59.06, date: 2018-06-29T17:30:46.062Z } { price:
                     price: 25.32,
                     soldDate: null,
                     quantity: 5000,
+                })
+            ).add(
+                purchasePriceInfo({
+                    boughtDate: '2015-08-13',
+                    price: 30.43,
+                    soldDate: '2016-02-13',
+                    quantity: 1000,
                 })
             )).addPurchase(purchaseInfo('MSFT').add(
                 purchasePriceInfo({
@@ -51,8 +54,18 @@ another promise then:  { price: 59.06, date: 2018-06-29T17:30:46.062Z } { price:
                     quantity: 400,
                 })
             ));
-
         const trp = timeRangePortfolio(portfolio1, startDate, endDate);
-        console.log(trp.getStats());
+
+        const statsPromises = trp.getStats();
+        const promises = _.values(statsPromises);
+        _.mapObject(statsPromises, (stats, ticker) => {
+            stats.then(response => {
+                console.log(ticker, " : ", response);
+                return response;
+            });
+        });
+        Promise.all(promises).then((responses) => {
+            console.log("Stats Combined", trp.getStatsCombined(responses));
+        });
     });
 });
