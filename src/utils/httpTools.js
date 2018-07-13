@@ -3,7 +3,7 @@ const _ = require('underscore');
 const request = require('request-promise');
 
 const httpTools = function httpTools() {
-    const TIMEOUT = 1000;
+    const TIMEOUT = 10000;
     const buildFullUrl = function buildFullUrl(host, path, queryParams) {
         let qParams = queryParams;
         if (_.isObject(queryParams)) {

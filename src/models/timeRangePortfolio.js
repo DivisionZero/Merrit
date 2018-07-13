@@ -143,12 +143,13 @@ module.exports = function timeRangePortfolio(portfolio, startDate, endDate) {
         let currentAmount = 0;
         _.each(allStats, (stats) => {
             const amountGained = stats.amountGained;
+            const percentGainedLocal = stats.percentGained ? amountGained / stats.percentGained : 0;
             totalAmountGained += amountGained;
-            currentAmount += (amountGained / stats.percentGained) - amountGained;
+            currentAmount += percentGainedLocal - amountGained;
         });
         return {
             amountGained: totalAmountGained,
-            percentGained: totalAmountGained / currentAmount,
+            percentGained: currentAmount ? totalAmountGained / currentAmount : 0,
         };
     };
 
