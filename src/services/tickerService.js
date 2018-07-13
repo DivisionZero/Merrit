@@ -3,7 +3,7 @@ const dateTools = require('../utils/dateTools');
 const tickerInfo = require('../models/tickerInfo');
 const dateAndTime = require('date-and-time');
 
-module.exports = function tickerService(avService) {
+module.exports = function tickerService(avService, dbService) {
     let useCache = true;
     const cache = {};
     const fetching = {};
@@ -25,13 +25,34 @@ module.exports = function tickerService(avService) {
             .min(localTicker => localTicker.date.getTime())
             .value();
     };
+    
+    const fetchFromAvService = function fetchFromAvService(ticker) {
+        return avService.timeSeriesDaily(ticker)
+            .then(result => JSON.parse(result))
+            .then(resultJson => tickerInfo('Daily', resultJson));
+    };
+
+    const fetchFromDb = function fetchFromDb(ticker) {
+        return dbService.timeSeriesDaily(ticker);
+    };
+
+    const fetchData = function fetchData(ticker) {
+        return fetchFromDb(ticker).then((response) => {
+            if (response === null) {
+                const avResponse = fetchFromAvService(ticker);
+                avResponse.then((response) => {
+                    dbService.saveTimeSeriesDaily(ticker, response);
+                });
+                return avResponse;
+            }
+            return Promise.resolve(response);
+        });
+    };
 
     const initCache = function initCache(ticker) {
         if ((_.isEmpty(cache[ticker]) || !useCache)) {
             if (!fetching[ticker]) {
-                fetching[ticker] = avService.timeSeriesDaily(ticker)
-                    .then(result => JSON.parse(result))
-                    .then(resultJson => tickerInfo('Daily', resultJson))
+                fetching[ticker] = fetchData(ticker)
                     .then((convertedResponse) => {
                         cache[ticker] = convertedResponse;
                         fetching[ticker] = null;

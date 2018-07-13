@@ -14,6 +14,7 @@ describe('tickerService', () => {
     let tickerService;
     describe('Exact, no scaling', () => {
         let timeSeriesDaily;
+        let dbTimeSeriesDaily;
         const now = new Date();
         const price = 100;
         beforeEach(() => {
@@ -26,8 +27,15 @@ describe('tickerService', () => {
                     return Promise.resolve(JSON.stringify(timeSeriesData));
                 },
             };
-            tickerService = tickerSvc(timeSeriesDaily);
+            dbTimeSeriesDaily = {
+                timeSeriesDaily() {
+                    return Promise.resolve(null);
+                },
+                saveTimeSeriesDaily() {},
+            };
+            tickerService = tickerSvc(timeSeriesDaily, dbTimeSeriesDaily);
             sinon.spy(timeSeriesDaily, 'timeSeriesDaily');
+            sinon.spy(dbTimeSeriesDaily, 'timeSeriesDaily');
         });
         it('test getPriceForDate()', (done) => {
             const priceObjPromise = tickerService.getPriceForDate('Z', now);
@@ -46,11 +54,12 @@ describe('tickerService', () => {
                 promise.then((response) => {
                     response.price.should.deep.equal(price);
                     dateTools.isSameDay(now, response.date).should.be.true;
+                    dbTimeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
+                    timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
+                    done();
                 }).catch(() => {
                 });
             });
-            timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
-            done();
         });
         it('test caching', (done) => {
             tickerService.setUseCache(true);
@@ -74,13 +83,8 @@ describe('tickerService', () => {
             tickerService.setUseCache(true);
             const priceObjPromise1 = tickerService.getPriceForDate('Z', now);
             const priceObjPromise2 = tickerService.getPriceForDate('Z', now);
-            priceObjPromise1.then(() => {
-                timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
-            });
-            priceObjPromise2.then(() => {
-                timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
-            });
             Promise.all([priceObjPromise1, priceObjPromise2]).then(() => {
+                timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
                 done();
             });
         });
@@ -127,7 +131,13 @@ describe('tickerService', () => {
                     return Promise.resolve(JSON.stringify(timeSeriesData));
                 },
             };
-            tickerService = tickerSvc(timeSeriesDaily);
+            dbTimeSeriesDaily = {
+                timeSeriesDaily() {
+                    return Promise.resolve(null);
+                },
+                saveTimeSeriesDaily() {},
+            };
+            tickerService = tickerSvc(timeSeriesDaily, dbTimeSeriesDaily);
             sinon.spy(timeSeriesDaily, 'timeSeriesDaily');
         });
         it('test getPriceForDateScaling Found', (done) => {

@@ -1,5 +1,6 @@
 const avService = require('../../src/services/alphaVantageService');
-const tickerService = require('../../src/services/tickerService')(avService);
+const dbService = require('../../src/services/mongoService');
+const tickerService = require('../../src/services/tickerService')(avService, dbService);
 const dateAndTime = require('date-and-time');
 const _ = require('underscore');
 

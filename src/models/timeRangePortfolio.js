@@ -1,6 +1,7 @@
 const _ = require('underscore');
 const tickerServiceDefault = require('../services/tickerService');
 const avService = require('../services/alphaVantageService');
+const dbService = require('../services/mongoService');
 
 module.exports = function timeRangePortfolio(portfolio, startDate, endDate) {
     const applicablePurchases = {};
@@ -21,7 +22,7 @@ module.exports = function timeRangePortfolio(portfolio, startDate, endDate) {
 
     const getTickerService = function getTickerService() {
         if (tickerService === undefined) {
-            tickerService = tickerServiceDefault(avService);
+            tickerService = tickerServiceDefault(avService, dbService);
         }
         return tickerService;
     };
