@@ -3,6 +3,7 @@ const _ = require('underscore');
 const request = require('request-promise');
 
 const httpTools = function httpTools() {
+    const TIMEOUT = 1000;
     const buildFullUrl = function buildFullUrl(host, path, queryParams) {
         let qParams = queryParams;
         if (_.isObject(queryParams)) {
@@ -11,12 +12,14 @@ const httpTools = function httpTools() {
         return [host, path, '?', qParams].join('');
     };
     const simpleGet = function simpleGet(host, path, queryParams) {
-        return request.get(buildFullUrl(host, path, queryParams));
-        /*
-            .then(response => {
-                return response;
+        const options = {
+            url: buildFullUrl(host, path, queryParams),
+            timeout: TIMEOUT,
+        };
+        return request.get(options)
+            .catch(e => {
+                console.log(e);
             });
-            */
         // TODO: error handling?
     };
 

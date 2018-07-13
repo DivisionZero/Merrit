@@ -12,6 +12,7 @@ const alphaVantageService = function alphaVantageService() {
         return params;
     };
     const timeSeriesDaily = function timeSeriesDaily(ticker) {
+console.log("Making Get for: ", ticker);
         const queryParams = buildParamsObj({
             symbol: ticker.toUpperCase(),
             function: series.TIME_SERIES_DAILY,

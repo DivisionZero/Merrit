@@ -6,6 +6,7 @@ const dateAndTime = require('date-and-time');
 module.exports = function tickerService(avService) {
     let useCache = true;
     const cache = {};
+    const fetching = {};
 
     const findPriceTicker = function findPriceTicker(ticker, date) {
         const tickerPriceInfo = _.chain(cache[ticker].timeSeries)
@@ -26,14 +27,18 @@ module.exports = function tickerService(avService) {
     };
 
     const initCache = function initCache(ticker) {
-        if (_.isEmpty(cache[ticker]) || !useCache) {
-            return avService.timeSeriesDaily(ticker)
-                .then(result => JSON.parse(result))
-                .then(resultJson => tickerInfo('Daily', resultJson))
-                .then((convertedResponse) => {
-                    cache[ticker] = convertedResponse;
-                    return true;
-                });
+        if ((_.isEmpty(cache[ticker]) || !useCache)) {
+            if(!fetching[ticker]) {
+                fetching[ticker] = avService.timeSeriesDaily(ticker)
+                        .then(result => JSON.parse(result))
+                        .then(resultJson => tickerInfo('Daily', resultJson))
+                        .then((convertedResponse) => {
+                            cache[ticker] = convertedResponse;
+                            fetching[ticker] = null;
+                            return true;
+                        });
+            }
+            return fetching[ticker];
         }
         return Promise.resolve(true);
     };
