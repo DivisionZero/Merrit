@@ -1,5 +1,4 @@
 const _ = require('underscore');
-const { get } = require('../utils/objectTools');
 const tickerServiceDefault = require('../services/tickerService');
 const avService = require('../services/alphaVantageService');
 
@@ -23,7 +22,7 @@ module.exports = function timeRangePortfolio(portfolio, startDate, endDate) {
     const getTickerService = function getTickerService() {
         if (tickerService === undefined) {
             tickerService = tickerServiceDefault(avService);
-        };
+        }
         return tickerService;
     };
 
@@ -36,7 +35,7 @@ module.exports = function timeRangePortfolio(portfolio, startDate, endDate) {
                     promiseRange.then((rangeResponse) => {
                         tickerPrices[ticker] = {
                             start: rangeResponse.startResponse,
-                            end: rangeResponse.endResponse
+                            end: rangeResponse.endResponse,
                         };
                     });
                     promises[ticker] = promiseRange;
@@ -64,7 +63,7 @@ module.exports = function timeRangePortfolio(portfolio, startDate, endDate) {
         }
         obj[key].push({
             start,
-            end
+            end,
         });
         return obj;
     };
@@ -106,50 +105,44 @@ module.exports = function timeRangePortfolio(portfolio, startDate, endDate) {
             });
     });
 
-    const singleGained = function singleGained(endPrice, startPrice) {
-        return endPrice - startPrice;
-    };
-
-    const gained = function gained(endPrice, startPrice, quantity) {
-        return singleGained(endPrice, startPrice) * quantity;
-    };
-
-    const percentage = function percentage(amountGained, currentPrice) {
-        return (currentPrice - amountGained) / 100;
-    };
-
-    const percentGained = function percentGained(oldPrice, newPrice) {
+    const getPercentGained = function getPercentGained(oldPrice, newPrice) {
         return (newPrice - oldPrice) / oldPrice;
     };
 
-    const reducePurchasesToAmount = function reducePurchasesToAmount(purchases, ticker, tickerResponse) {
+    const reducePurchasesToAmount = function reducePurchasesToAmount(
+        purchases,
+        ticker,
+        tickerResponse,
+    ) {
         return _.reduce(purchases, (memo, purchase) => {
-            const difference = tickerResponse.endResponse.price - tickerResponse.startResponse.price;
+            const difference = tickerResponse.endResponse.price -
+                tickerResponse.startResponse.price;
             return memo + (difference * purchase.quantity);
         }, 0);
     };
 
     const getStatsByTicker = function getStatsByTicker(tickerPromises, purchases, ticker) {
-        return tickerPromises[ticker].then((tickerResponse) => {
-            return {
-                amountGained: reducePurchasesToAmount(purchases, ticker, tickerResponse),
-                percentGained: percentGained(tickerResponse.startResponse.price, tickerResponse.endResponse.price),
-            };
-        });
+        return tickerPromises[ticker].then(tickerResponse => ({
+            amountGained: reducePurchasesToAmount(purchases, ticker, tickerResponse),
+            percentGained: getPercentGained(
+                tickerResponse.startResponse.price,
+                tickerResponse.endResponse.price,
+            ),
+        }));
     };
 
     const getStatsCombined = function getStatsCombined(allStats) {
         let totalAmountGained = 0;
         let currentAmount = 0;
         _.each(allStats, (stats) => {
-            const amountGained = stats.amountGained;
-            const percentGainedLocal = stats.percentGained ? amountGained / stats.percentGained : 0;
+            const { amountGained, percentGained } = stats;
+            const percentGainedLocal = percentGained ? amountGained / percentGained : 0;
             totalAmountGained += amountGained;
             currentAmount += percentGainedLocal - amountGained;
         });
         return {
             amountGained: totalAmountGained,
-            percentGained: currentAmount ? totalAmountGained / currentAmount : 0,
+            getPercentGained: currentAmount ? totalAmountGained / currentAmount : 0,
         };
     };
 
