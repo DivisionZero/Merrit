@@ -70,6 +70,34 @@ describe('tickerService', () => {
             }).catch(() => {
             });
         });
+        it('test double fetching cached', (done) => {
+            tickerService.setUseCache(true);
+            const priceObjPromise1 = tickerService.getPriceForDate('Z', now);
+            const priceObjPromise2 = tickerService.getPriceForDate('Z', now);
+            priceObjPromise1.then(() => {
+                timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
+            });
+            priceObjPromise2.then(() => {
+                timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
+            });
+            Promise.all([priceObjPromise1, priceObjPromise2]).then(() => {
+                done();
+            });
+        });
+        it('test double fetching not cached', (done) => {
+            tickerService.setUseCache(false);
+            const priceObjPromise1 = tickerService.getPriceForDate('Z', now);
+            const priceObjPromise2 = tickerService.getPriceForDate('Z', now);
+            priceObjPromise1.then(() => {
+                timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
+            });
+            priceObjPromise2.then(() => {
+                timeSeriesDaily.timeSeriesDaily.calledOnce.should.be.true;
+            });
+            Promise.all([priceObjPromise1, priceObjPromise2]).then(() => {
+                done();
+            });
+        });
     });
     describe('Find price with scaling', () => {
         let timeSeriesDaily;
