@@ -17,7 +17,7 @@ const httpTools = function httpTools() {
             timeout: TIMEOUT,
         };
         return request.get(options)
-            .catch(e => {
+            .catch((e) => {
                 console.log(e);
             });
         // TODO: error handling?

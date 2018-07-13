@@ -28,15 +28,15 @@ module.exports = function tickerService(avService) {
 
     const initCache = function initCache(ticker) {
         if ((_.isEmpty(cache[ticker]) || !useCache)) {
-            if(!fetching[ticker]) {
+            if (!fetching[ticker]) {
                 fetching[ticker] = avService.timeSeriesDaily(ticker)
-                        .then(result => JSON.parse(result))
-                        .then(resultJson => tickerInfo('Daily', resultJson))
-                        .then((convertedResponse) => {
-                            cache[ticker] = convertedResponse;
-                            fetching[ticker] = null;
-                            return true;
-                        });
+                    .then(result => JSON.parse(result))
+                    .then(resultJson => tickerInfo('Daily', resultJson))
+                    .then((convertedResponse) => {
+                        cache[ticker] = convertedResponse;
+                        fetching[ticker] = null;
+                        return true;
+                    });
             }
             return fetching[ticker];
         }
