@@ -25,7 +25,7 @@ module.exports = function tickerService(avService, dbService) {
             .min(localTicker => localTicker.date.getTime())
             .value();
     };
-    
+
     const fetchFromAvService = function fetchFromAvService(ticker) {
         return avService.timeSeriesDaily(ticker)
             .then(result => JSON.parse(result))
@@ -40,8 +40,8 @@ module.exports = function tickerService(avService, dbService) {
         return fetchFromDb(ticker).then((response) => {
             if (response === null) {
                 const avResponse = fetchFromAvService(ticker);
-                avResponse.then((response) => {
-                    dbService.saveTimeSeriesDaily(ticker, response);
+                avResponse.then((dbResponse) => {
+                    dbService.saveTimeSeriesDaily(ticker, dbResponse);
                 });
                 return avResponse;
             }

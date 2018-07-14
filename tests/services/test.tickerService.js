@@ -105,6 +105,7 @@ describe('tickerService', () => {
     });
     describe('Find price with scaling', () => {
         let timeSeriesDaily;
+        let dbTimeSeriesDaily;
         beforeEach(() => {
             timeSeriesDaily = {
                 timeSeriesDaily() {
