@@ -1,15 +1,14 @@
 const { getStr, getDate } = require('../utils/objectTools');
 const { DAY_FORMAT } = require('../utils/dateTools');
+const { constants } = require('../services/alphaVantageService');
 
-const DAILY = 'Daily';
-
-const metaData = function metaData(rawData) {
+const metaData = function metaData(rawData, timeSeriesInterval) {
     return {
-        symbol: getStr(rawData, '2. Symbol', null),
+        symbol: getStr(rawData, constants.SYMBOL, null),
         // TODO: universal date function?
-        lastRefreshed: getDate(rawData, '3. Last Refreshed', null, DAY_FORMAT),
-        timeZone: getStr(rawData, '5. Time Zone', null),
-        interval: getStr(rawData, 'Interval', DAILY),
+        lastRefreshed: getDate(rawData, constants.LAST_REFRESHED, null, DAY_FORMAT),
+        timeZone: getStr(rawData, constants.TIME_ZONE, null),
+        interval: timeSeriesInterval,
     };
 };
 

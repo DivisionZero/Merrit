@@ -2,6 +2,7 @@ const _ = require('underscore');
 const dateTools = require('../utils/dateTools');
 const tickerInfo = require('../models/tickerInfo');
 const dateAndTime = require('date-and-time');
+const { constants } = require('./alphaVantageService');
 
 module.exports = function tickerService(avService, dbService) {
     let useCache = true;
@@ -29,7 +30,7 @@ module.exports = function tickerService(avService, dbService) {
     const fetchFromAvService = function fetchFromAvService(ticker) {
         return avService.timeSeriesDaily(ticker)
             .then(result => JSON.parse(result))
-            .then(resultJson => tickerInfo('Daily', resultJson));
+            .then(resultJson => tickerInfo(constants.DAILY, resultJson));
     };
 
     const fetchFromDb = function fetchFromDb(ticker) {

@@ -2,14 +2,14 @@ const _ = require('underscore');
 const date = require('date-and-time');
 const { getNumber } = require('../utils/objectTools');
 const { DAY_FORMAT, MINUTE_FORMAT } = require('../utils/dateTools');
+const { constants } = require('../services/alphaVantageService');
 
-const VALID_FIELD_NAMES = {
-    '1. open': 'open',
-    '2. high': 'high',
-    '3. low': 'low',
-    '4. close': 'close',
-    '5. volume': 'volume',
-};
+const VALID_FIELD_NAMES = {};
+VALID_FIELD_NAMES[constants.OPEN] = 'open';
+VALID_FIELD_NAMES[constants.HIGH] = 'high';
+VALID_FIELD_NAMES[constants.LOW] = 'low';
+VALID_FIELD_NAMES[constants.CLOSE] = 'close';
+VALID_FIELD_NAMES[constants.VOLUME] = 'volume';
 
 const tickerPriceInfo = function tickerPriceInfo(timeSeriesStr, rawInfo = {}) {
     const tickerInfo = {};

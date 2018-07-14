@@ -5,6 +5,22 @@ const PATH = '/query';
 const series = {
     TIME_SERIES_DAILY: 'TIME_SERIES_DAILY',
 };
+const constants = {
+    OPEN: '1. open',
+    HIGH: '2. high',
+    LOW: '3. low',
+    CLOSE: '4. close',
+    VOLUME: '5. volume',
+    META_DATA: 'Meta Data',
+    TIME_ZONE: '5. Time Zone',
+    OUTPUT_SIZE: '4. Output Size',
+    TIME_SERIES_DAILY: 'Time Series (Daily)',
+    SYMBOL: '2. Symbol',
+    LAST_REFRESHED: '3. Last Refreshed',
+    US_EASTERN: 'US/Eastern',
+    TIME_SERIES: 'Time Series',
+    DAILY: 'Daily',
+};
 
 const alphaVantageService = function alphaVantageService() {
     const buildParamsObj = function buildParamsObj(params) {
@@ -22,6 +38,7 @@ console.log("Making Get for: ", ticker);
     };
     return {
         timeSeriesDaily,
+        constants
     };
 };
 

@@ -4,12 +4,17 @@ const dateAndTime = require('date-and-time');
 const dateTools = require('../../src/utils/dateTools');
 const _ = require('underscore');
 const sinon = require('sinon');
+const { constants } = require('../../src/services/alphaVantageService');
 
 const { expect } = chai;
 
 chai.should();
 
 describe('tickerService', () => {
+    const closePriceObj = (obj, dateStr, price) => { 
+        obj[dateStr] = {};
+        obj[dateStr][constants.CLOSE] = price; 
+    };
     const timeSeriesDailyStr = 'Time Series (Daily)';
     let tickerService;
     describe('Exact, no scaling', () => {
@@ -23,7 +28,7 @@ describe('tickerService', () => {
                     const timeSeriesData = {};
                     const nowFormatted = dateAndTime.format(now, dateTools.DAY_FORMAT);
                     timeSeriesData[timeSeriesDailyStr] = {};
-                    timeSeriesData[timeSeriesDailyStr][nowFormatted] = { '4. close': price };
+                    closePriceObj(timeSeriesData[timeSeriesDailyStr], nowFormatted, price);
                     return Promise.resolve(JSON.stringify(timeSeriesData));
                 },
             };
@@ -111,24 +116,12 @@ describe('tickerService', () => {
                 timeSeriesDaily() {
                     const timeSeriesData = {};
                     timeSeriesData[timeSeriesDailyStr] = {};
-                    timeSeriesData[timeSeriesDailyStr]['2018-06-15'] = {
-                        '4. close': 100,
-                    };
-                    timeSeriesData[timeSeriesDailyStr]['2018-06-14'] = {
-                        '4. close': 90,
-                    };
-                    timeSeriesData[timeSeriesDailyStr]['2018-06-13'] = {
-                        '4. close': 80,
-                    };
-                    timeSeriesData[timeSeriesDailyStr]['2018-06-12'] = {
-                        '4. close': 70,
-                    };
-                    timeSeriesData[timeSeriesDailyStr]['2018-06-08'] = {
-                        '4. close': 60,
-                    };
-                    timeSeriesData[timeSeriesDailyStr]['2018-06-07'] = {
-                        '4. close': 50,
-                    };
+                    closePriceObj(timeSeriesData[timeSeriesDailyStr], '2018-06-15', 100);
+                    closePriceObj(timeSeriesData[timeSeriesDailyStr], '2018-06-14', 90);
+                    closePriceObj(timeSeriesData[timeSeriesDailyStr], '2018-06-13', 80);
+                    closePriceObj(timeSeriesData[timeSeriesDailyStr], '2018-06-12', 70);
+                    closePriceObj(timeSeriesData[timeSeriesDailyStr], '2018-06-08', 60);
+                    closePriceObj(timeSeriesData[timeSeriesDailyStr], '2018-06-07', 50);
                     return Promise.resolve(JSON.stringify(timeSeriesData));
                 },
             };
