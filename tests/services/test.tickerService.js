@@ -11,9 +11,9 @@ const { expect } = chai;
 chai.should();
 
 describe('tickerService', () => {
-    const closePriceObj = (obj, dateStr, price) => { 
+    const closePriceObj = (obj, dateStr, price) => {
         obj[dateStr] = {};
-        obj[dateStr][constants.CLOSE] = price; 
+        obj[dateStr][constants.CLOSE] = price;
     };
     const timeSeriesDailyStr = 'Time Series (Daily)';
     let tickerService;

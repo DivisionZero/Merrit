@@ -1,5 +1,4 @@
 const chai = require('chai');
-const metaData = require('../../src/models/tickerMetaData');
 const tickerInfo = require('../../src/models/tickerInfo');
 const { constants } = require('../../src/services/alphaVantageService');
 const { isSameDay, DAY_FORMAT } = require('../../src/utils/dateTools');
