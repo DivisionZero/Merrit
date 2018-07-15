@@ -33,16 +33,16 @@ module.exports = function tickerService(avService, dbService) {
             .then(resultJson => tickerInfo(constants.DAILY, resultJson));
     };
 
-    const fetchFromDb = function fetchFromDb(ticker) {
+    const fetchFromDb = function fetchFromDb(ticker, date) {
         return dbService.timeSeriesDaily(ticker);
     };
 
-    const fetchData = function fetchData(ticker) {
-        return fetchFromDb(ticker).then((response) => {
-            if (response === null) {
+    const fetchData = function fetchData(ticker, date) {
+        return fetchFromDb(ticker, date).then((response) => {
+            if (response.timeSeries.length === 0) {
                 const avResponse = fetchFromAvService(ticker);
                 avResponse.then((dbResponse) => {
-                    dbService.saveTimeSeriesDaily(ticker, dbResponse);
+                    return dbService.saveTimeSeriesDaily(ticker, dbResponse);
                 });
                 return avResponse;
             }
@@ -50,11 +50,12 @@ module.exports = function tickerService(avService, dbService) {
         });
     };
 
-    const initCache = function initCache(ticker) {
+    const initCache = function initCache(ticker, date) {
         if ((_.isEmpty(cache[ticker]) || !useCache)) {
             if (!fetching[ticker]) {
-                fetching[ticker] = fetchData(ticker)
+                fetching[ticker] = fetchData(ticker, date)
                     .then((convertedResponse) => {
+                        // todo: do this for dates?
                         cache[ticker] = convertedResponse;
                         fetching[ticker] = null;
                         return true;
@@ -66,7 +67,7 @@ module.exports = function tickerService(avService, dbService) {
     };
 
     const getPriceForDate = function getPriceForDate(ticker, date) {
-        return initCache(ticker).then(() => Promise.resolve(findPriceTicker(ticker, date)));
+        return initCache(ticker, date).then(() => Promise.resolve(findPriceTicker(ticker, date)));
     };
 
     const getTickerMinDate = function getTickerMinDate(ticker) {
